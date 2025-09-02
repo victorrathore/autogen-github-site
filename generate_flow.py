@@ -58,10 +58,24 @@ async def main():
     workflow_task = await agent.run(task=prompt)
     workflow_text = workflow_task.messages[-1].content  # Extract final response
 
-    # --- Clean all code fences anywhere in the text ---
-    workflow_text = re.sub(r"```[a-zA-Z]*", "", workflow_text)  # remove opening fences like ```yaml
-    workflow_text = workflow_text.replace("```", "")             # remove any remaining ```
+    # --- Remove all code fences anywhere ---
+    workflow_text = re.sub(r"```[a-zA-Z]*", "", workflow_text)  # opening fences
+    workflow_text = workflow_text.replace("```", "")             # any remaining ```
     workflow_text = workflow_text.strip()
+
+    # --- Remove invalid lines (like TERMINATE or any line that is not YAML) ---
+    clean_lines = []
+    for line in workflow_text.splitlines():
+        stripped = line.strip()
+        if stripped == "":
+            clean_lines.append(line)
+        elif re.match(r"^(\w+):", stripped) or re.match(r"^- ", stripped) or line.startswith(" "):
+            clean_lines.append(line)
+        else:
+            # skip invalid lines
+            continue
+
+    workflow_text = "\n".join(clean_lines)
 
     # --- Optional: remove trailing spaces on each line ---
     workflow_text = "\n".join(line.rstrip() for line in workflow_text.splitlines())

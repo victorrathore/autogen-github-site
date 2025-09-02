@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from autogen_agentchat import AgentChat
+from autogen_agentchat.agents import AgentChat
 import git
 
 # --- Load .env ---

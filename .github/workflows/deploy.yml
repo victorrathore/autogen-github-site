@@ -17,4 +17,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./  # Assuming the root directory is where the HTML files are located
+        publish_dir: ./  # Adjust this to the directory containing your static site files, if necessary

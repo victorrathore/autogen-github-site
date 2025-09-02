@@ -15,7 +15,7 @@ if not api_key:
 
 # --- Config ---
 REPO_PATH = os.path.dirname(os.path.abspath(__file__))
-REPO_URL = "https://github.com/victorrathore/autogen-github-site.git"  # replace with your repo
+REPO_URL = "https://github.com/victorrathore/autogen-github-site.git"  # your repo
 INDEX_FILE = os.path.join(REPO_PATH, "index.html")
 
 # --- Ensure index.html exists ---
@@ -36,13 +36,14 @@ if repo.head.is_detached or repo.active_branch.name != "main":
     else:
         repo.git.checkout("-b", "main")
 
-# --- Autogen Agent prompt (schedule removed) ---
+# --- Autogen Agent prompt ---
 prompt = """
 Generate a GitHub Actions workflow YAML file for a static HTML site.
 The workflow should:
 1. Trigger on push to main branch.
 2. Checkout the code.
 3. Deploy the site automatically to GitHub Pages.
+4. Do NOT include any Node.js or npm steps.
 Return only valid YAML content.
 """
 
@@ -56,13 +57,13 @@ agent = AssistantAgent(
 async def main():
     # --- Generate workflow asynchronously ---
     workflow_task = await agent.run(task=prompt)
-    workflow_text = workflow_task.messages[-1].content  # Extract final response
+    workflow_text = workflow_task.messages[-1].content  # final response
 
-    # --- Remove all code fences ---
+    # --- Clean code fences ---
     workflow_text = re.sub(r"```[a-zA-Z]*", "", workflow_text)
     workflow_text = workflow_text.replace("```", "").strip()
 
-    # --- Clean invalid lines ---
+    # --- Keep only valid YAML lines ---
     clean_lines = []
     for line in workflow_text.splitlines():
         stripped = line.strip()
@@ -85,11 +86,10 @@ async def main():
         f.write(workflow_text)
     print("Workflow generated at:", workflow_file)
 
-    # --- Git commit & push only if there are changes ---
+    # --- Git commit & push only if changes ---
     if repo.is_dirty(untracked_files=True):
         repo.git.add(all=True)
         repo.index.commit("Autogen update: index.html + workflow")
-        # Ensure remote 'origin' exists
         if "origin" not in [r.name for r in repo.remotes]:
             origin = repo.create_remote("origin", REPO_URL)
         else:
@@ -99,5 +99,5 @@ async def main():
     else:
         print("No changes to commit. Agent finished.")
 
-# --- Run the async main ---
+# --- Run async main ---
 asyncio.run(main())

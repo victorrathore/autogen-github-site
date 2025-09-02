@@ -58,10 +58,13 @@ async def main():
     workflow_task = await agent.run(task=prompt)
     workflow_text = workflow_task.messages[-1].content  # Extract final response
 
-    # --- Clean code fences (```yaml ... ```) ---
+    # --- Clean all code fences anywhere in the text ---
+    workflow_text = re.sub(r"```[a-zA-Z]*", "", workflow_text)  # remove opening fences like ```yaml
+    workflow_text = workflow_text.replace("```", "")             # remove any remaining ```
     workflow_text = workflow_text.strip()
-    workflow_text = re.sub(r"^```[a-zA-Z]*\n", "", workflow_text)  # remove opening ```
-    workflow_text = re.sub(r"\n```$", "", workflow_text)           # remove closing ```
+
+    # --- Optional: remove trailing spaces on each line ---
+    workflow_text = "\n".join(line.rstrip() for line in workflow_text.splitlines())
 
     # --- Validate YAML ---
     try:

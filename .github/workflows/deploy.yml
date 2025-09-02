@@ -11,10 +11,23 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
+
+    - name: Setup GitHub Pages
+      uses: actions/setup-pages@v1
 
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      run: |-
+        mkdir -p out
+        cp -r * out/
+        echo "html" > out/.nojekyll
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v1
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./ # This is where your HTML files are located
+        path: out
+
+    - name: Commit GitHub Pages
+      uses: actions/deploy-pages@v1

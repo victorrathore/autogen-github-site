@@ -36,14 +36,13 @@ if repo.head.is_detached or repo.active_branch.name != "main":
     else:
         repo.git.checkout("-b", "main")
 
-# --- Autogen Agent prompt ---
+# --- Autogen Agent prompt (schedule removed) ---
 prompt = """
 Generate a GitHub Actions workflow YAML file for a static HTML site.
 The workflow should:
 1. Trigger on push to main branch.
 2. Checkout the code.
 3. Deploy the site automatically to GitHub Pages.
-4. Schedule it to run daily at 6 PM IST.
 Return only valid YAML content.
 """
 

@@ -49,7 +49,10 @@ agent = AssistantAgent(
 async def main():
     # --- Generate workflow asynchronously ---
     workflow_task = await agent.run(task=prompt)
-    workflow_text = workflow_task.content  # <-- use .content to get the string
+
+    # --- Extract the final response ---
+    final_message = workflow_task.messages[-1]  # Get the last message
+    workflow_text = final_message.content  # Extract the content of the final message
 
     # --- Save workflow ---
     workflow_dir = os.path.join(REPO_PATH, ".github", "workflows")

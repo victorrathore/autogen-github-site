@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Check out the code
+      uses: actions/checkout@v2
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
+    - name: Setup Pages
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
 
-      - name: Upload HTML files to GitHub Pages
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: './'   # Adjust this according to your HTML structure
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+    - name: Build and Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./  # Path to your static HTML site files

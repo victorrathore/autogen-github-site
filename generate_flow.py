@@ -6,6 +6,7 @@ from autogen_ext.models.openai import OpenAIChatCompletionClient
 import git
 import yaml
 
+
 # --- Load .env ---
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")

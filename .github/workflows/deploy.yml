@@ -1,4 +1,4 @@
-name: Deploy static HTML site to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Deploy to GitHub Pages
-      uses: actions-gh-pages/action@v4
+      uses: peaceiris/actions-gh-pages@v3.8.0
       with:
-        branch: gh-pages # Deploy to gh-pages branch
-        folder: .        # The folder where the static site is located
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./your-site-directory  # Replace with your actual site directory

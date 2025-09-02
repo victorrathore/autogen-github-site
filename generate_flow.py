@@ -24,10 +24,15 @@ if not os.path.exists(INDEX_FILE):
 # --- Clone or init repo ---
 if not os.path.exists(os.path.join(REPO_PATH, ".git")):
     repo = git.Repo.init(REPO_PATH)
-    # Create remote only if we just initialized
-    repo.create_remote("origin", REPO_URL)
 else:
     repo = git.Repo(REPO_PATH)
+
+# --- Ensure main branch exists ---
+if repo.head.is_detached or repo.active_branch.name != "main":
+    if "main" in repo.heads:
+        repo.head.reference = repo.heads["main"]
+    else:
+        repo.git.checkout("-b", "main")
 
 # --- Autogen Agent prompt ---
 prompt = """

@@ -1,11 +1,11 @@
 import os
 import asyncio
+import re
 from dotenv import load_dotenv
 from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 import git
 import yaml
-
 
 # --- Load .env ---
 load_dotenv()
@@ -59,11 +59,10 @@ async def main():
     workflow_task = await agent.run(task=prompt)
     workflow_text = workflow_task.messages[-1].content  # Extract final response
 
-    # --- Clean workflow text ---
+    # --- Clean code fences (```yaml ... ```) ---
     workflow_text = workflow_text.strip()
-    if workflow_text.startswith("```") and workflow_text.endswith("```"):
-        # Remove code fences
-        workflow_text = "\n".join(workflow_text.splitlines()[1:-1])
+    workflow_text = re.sub(r"^```[a-zA-Z]*\n", "", workflow_text)  # remove opening ```
+    workflow_text = re.sub(r"\n```$", "", workflow_text)           # remove closing ```
 
     # --- Validate YAML ---
     try:

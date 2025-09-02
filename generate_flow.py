@@ -48,7 +48,8 @@ agent = AssistantAgent(
 
 async def main():
     # --- Generate workflow asynchronously ---
-    workflow_yaml = await agent.run(task=prompt)
+    workflow_task = await agent.run(task=prompt)
+    workflow_text = workflow_task.result  # Extract the string
 
     # --- Save workflow ---
     workflow_dir = os.path.join(REPO_PATH, ".github", "workflows")
@@ -56,7 +57,7 @@ async def main():
 
     workflow_file = os.path.join(workflow_dir, "deploy.yml")
     with open(workflow_file, "w") as f:
-        f.write(workflow_yaml)
+        f.write(workflow_text)
 
     print("Workflow generated at:", workflow_file)
 

@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Static Site to GitHub Pages
 
 on:
   push:
@@ -6,28 +6,29 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Setup GitHub Pages
-      uses: actions/setup-pages@v1
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
 
     - name: Deploy to GitHub Pages
-      run: |-
-        mkdir -p out
-        cp -r * out/
-        echo "html" > out/.nojekyll
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload to GitHub Pages
       uses: actions/upload-pages-artifact@v1
       with:
-        path: out
+        path: ./ # Specify the path if your HTML files are in a specific subdirectory
 
-    - name: Commit GitHub Pages
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
       uses: actions/deploy-pages@v1

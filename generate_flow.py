@@ -49,7 +49,7 @@ agent = AssistantAgent(
 async def main():
     # --- Generate workflow asynchronously ---
     workflow_task = await agent.run(task=prompt)
-    workflow_text = workflow_task.output  # <-- use .output to get the string
+    workflow_text = workflow_task.content  # <-- use .content to get the string
 
     # --- Save workflow ---
     workflow_dir = os.path.join(REPO_PATH, ".github", "workflows")

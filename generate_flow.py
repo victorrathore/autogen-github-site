@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 import git
+import yaml
 
 # --- Load .env ---
 load_dotenv()
@@ -56,6 +57,19 @@ async def main():
     # --- Generate workflow asynchronously ---
     workflow_task = await agent.run(task=prompt)
     workflow_text = workflow_task.messages[-1].content  # Extract final response
+
+    # --- Clean workflow text ---
+    workflow_text = workflow_text.strip()
+    if workflow_text.startswith("```") and workflow_text.endswith("```"):
+        # Remove code fences
+        workflow_text = "\n".join(workflow_text.splitlines()[1:-1])
+
+    # --- Validate YAML ---
+    try:
+        yaml.safe_load(workflow_text)
+    except yaml.YAMLError as e:
+        print("YAML syntax error:", e)
+        raise
 
     # --- Save workflow ---
     workflow_dir = os.path.join(REPO_PATH, ".github", "workflows")

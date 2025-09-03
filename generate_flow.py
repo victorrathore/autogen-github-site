@@ -63,6 +63,11 @@ async def main():
     workflow_text = re.sub(r"```[a-zA-Z]*", "", workflow_text)
     workflow_text = workflow_text.replace("```", "").strip()
 
+    # 🔧 Auto-fix deprecated GitHub Actions versions
+    workflow_text = workflow_text.replace("actions/upload-artifact@v3", "actions/upload-artifact@v4")
+    workflow_text = workflow_text.replace("actions/download-artifact@v3", "actions/download-artifact@v4")
+
+
     #  Keep only valid YAML lines
     clean_lines = []
     for line in workflow_text.splitlines():

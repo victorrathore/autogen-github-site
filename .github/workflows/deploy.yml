@@ -1,4 +1,4 @@
-name: Deploy Static HTML Site
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -17,4 +17,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./path/to/your/html/files  # Change this path to where your HTML files are located
+        publish_dir: ./  # Assuming your static site is on the root directory

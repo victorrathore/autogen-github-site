@@ -1,4 +1,4 @@
-name: Deploy Static HTML Site to GitHub Pages
+name: Deploy static site to GitHub Pages
 
 on:
   push:
@@ -10,15 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: actions-gh-pages/action@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./path-to-your-html-files
-        publish_branch: gh-pages
-
-
-Note: Replace `./path-to-your-html-files` with the directory where your HTML files are located. This directory should be set relative to the root of your repository. Make sure that your repository is configured to serve from the `gh-pages` branch in the repository settings. TERMINATE
+        publish_dir: ./  # Set this to the directory of your static site files if different

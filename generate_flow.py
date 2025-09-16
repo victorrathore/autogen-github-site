@@ -1,7 +1,3 @@
-
-
-
-
 # hard fallback workflow
 
 import os

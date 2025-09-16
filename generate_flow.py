@@ -1,3 +1,7 @@
+
+
+
+
 # hard fallback workflow
 
 import os
@@ -108,10 +112,10 @@ async def main():
     try:
         parsed_yaml = yaml.safe_load(workflow_text)
         if not parsed_yaml or "jobs" not in parsed_yaml or "deploy" not in parsed_yaml["jobs"]:
-            print("⚠️ Agent YAML missing required jobs. Using fallback workflow.")
+            print("Agent YAML missing required jobs. Using fallback workflow.")
             workflow_text = FALLBACK_WORKFLOW
     except yaml.YAMLError:
-        print("⚠️ Invalid YAML from agent. Using fallback workflow.")
+        print("Invalid YAML from agent. Using fallback workflow.")
         workflow_text = FALLBACK_WORKFLOW
 
     # Save workflow 
